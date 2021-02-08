@@ -16,18 +16,31 @@ import { constant } from "lodash";
 const Sourcing = ({
 
   isAuthenticated,
-  selectedSale
+  selectedSale,
+  allLogs
 
 }) => {
   console.log(selectedSale)
 
+
   const [saleData, setSaleData] = useState()
+  let [filteredSale, setFilteredSale] = useState([])
   useEffect(() => {
     if (selectedSale) {
       setSaleData(selectedSale)
     }
   }, [selectedSale])
 
+
+  useEffect(() => {
+    if (allLogs && selectedSale) {
+      filteredSale = allLogs.filter((item) => {
+        return item.SALE_id == selectedSale._id
+      })
+    }
+
+    setFilteredSale(filteredSale)
+  }, [selectedSale, allLogs])
 
 
   return (
@@ -130,23 +143,23 @@ const Sourcing = ({
                     <tr>
                       <th
                         scope="col"
-                        className="pl-0  border-0 font-size-4 font-weight-normal"
+                        className="pl-0  border-0 font-size-4 font-weight-bold"
                       >
                         Product Name
-                                                                          </th>
+                        </th>
 
                       <th
                         scope="col"
-                        className="border-0 font-size-4 font-weight-normal"
+                        className="border-0 font-size-4 font-weight-bold"
                       >
                         Quantity
-                                                                   </th>
+                 </th>
                       <th
                         scope="col"
-                        className="border-0 font-size-4 font-weight-normal"
+                        className="border-0 font-size-4 font-weight-bold"
                       >
                         Total Price
-                                                                   </th>
+                 </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -175,6 +188,62 @@ const Sourcing = ({
               </div>
             </div>
 
+            <div className='row'>
+              <label
+                htmlFor="aboutTextarea"
+                className="d-block text-black-2 font-size-4 font-weight-semibold ml-7 mb-4"
+              >
+                Payments
+                 </label>
+              <div className="table-responsive ml-10">
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th
+                        scope="col"
+                        className="pl-0  border-0 font-size-4 font-weight-bold"
+                      >
+                        Customer Name
+                        </th>
+                      <th
+                        scope="col"
+                        className="border-0 font-size-4 font-weight-bold"
+                      >
+                        Contact
+                  </th>
+                      <th
+                        scope="col"
+                        className="border-0 font-size-4 font-weight-bold"
+                      >
+                        Payment
+                   </th>
+                      <th
+                        scope="col"
+                        className="border-0 font-size-4 font-weight-bold"
+                      >
+                        Timestamp
+                   </th>
+
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {
+                      filteredSale && filteredSale.map((item) => (
+                        <tr className="border border-color-2">
+                          <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.CUSTOMER && item.CUSTOMER.customer_name}</td>
+                          <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.CUSTOMER && item.CUSTOMER.contact}</td>
+                          <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.PAYMENT} rs.</td>
+                          <td scope="row" className="pl-6 border-0 py-7 pr-0">{new Date(item.TIMESTAMP).toLocaleString()}</td>
+                        </tr>
+                      ))
+                    }
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
 
 
 
@@ -188,7 +257,8 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   customers: state.customer.customers,
   selectedSale: state.sale.selectedSale,
-  products: state.product.products
+  products: state.product.products,
+  allLogs: state.logs.transactionLogs
 
 });
 export default connect(mapStateToProps, { editProduct, addSale })(Sourcing);

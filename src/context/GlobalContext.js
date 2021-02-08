@@ -12,9 +12,10 @@ const GlobalProvider = ({ children }) => {
   const [visibleOffCanvas, setVisibleOffCanvas] = useState(false);
   const [candidateViewModal, setCandidateViewModal] = useState(false);
   const [financeViewModal, setFinanceViewModal] = useState(false);
+  const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState({
-    category:"",
-    flag:false
+    category: "",
+    flag: false
   });
   const [header, setHeader] = useState({
     theme: "light",
@@ -43,11 +44,14 @@ const GlobalProvider = ({ children }) => {
     setVideoModalVisible(!videoModalVisible);
   };
   const toggleDeleteModal = (name) => {
-    setDeleteModalVisible({category:name,flag:!deleteModalVisible.flag});
+    setDeleteModalVisible({ category: name, flag: !deleteModalVisible.flag });
   };
 
   const toggleApplicationModal = () => {
     setApplicationModalVisible(!applicationModalVisible);
+  };
+  const togglePaymentModal = () => {
+    setPaymentModalVisible(!paymentModalVisible);
   };
 
   const toggleSignInModal = () => {
@@ -78,6 +82,8 @@ const GlobalProvider = ({ children }) => {
       value={{
         toggleDeleteModal,
         deleteModalVisible,
+        togglePaymentModal,
+        paymentModalVisible,
         themeDark,
         toggleTheme,
         showSidebarDashboard,

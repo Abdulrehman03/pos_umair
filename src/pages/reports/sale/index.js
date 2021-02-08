@@ -18,9 +18,8 @@ const finance = ({
   getProducts,
   sales,
   setSelectedSale,
-  products,
-  editProduct,
-  deleteProduct
+
+  allLogs
 }) => {
   const styles = {
     csvButton: {
@@ -111,7 +110,6 @@ const finance = ({
         console.log(endDate + "End")
         console.log(startDate + "start")
         console.log(saleDate + "sale")
-
         if (startDate <= saleDate && endDate >= saleDate) {
           console.log("working")
           saleData.push(data)
@@ -120,7 +118,6 @@ const finance = ({
     }
   }, [state, sales])
   console.log(saleData)
-
 
   console.log(sales)
   useEffect(() => {
@@ -132,6 +129,12 @@ const finance = ({
             ...row,
             badge: (
               <>
+                <i
+                  style={{ cursor: "pointer" }}
+                  class="fas fa-money-check"
+                  onClick={() => handlePayment(row)}
+                ></i>
+                &nbsp; &nbsp;
                 <i
                   style={{ cursor: "pointer" }}
                   class="fa fa-eye"
@@ -153,10 +156,19 @@ const finance = ({
   console.log(datatable)
 
 
+
+
+
   const handleDeleteReport = async (row) => {
     console.log(row);
     setSelectedSale(row);
     gContext.toggleDeleteModal("SALES");
+
+  };
+  const handlePayment = async (row) => {
+    console.log(row);
+    setSelectedSale(row);
+    gContext.togglePaymentModal();
 
   };
 
@@ -198,6 +210,8 @@ const finance = ({
               className="btn btn-green btn-h-10 text-white min-width-px-100 float-right mt-6 rounded-5 text-uppercase"
             />
           </div>
+          <button className="btn btn-primary line-height-reset h-100 btn-submit w-5  mt-5 ml-5 text-uppercase">All</button>
+          <button className="btn btn-primary line-height-reset h-100 btn-submit w-5 mt-5 ml-5 text-uppercase">Pending</button>
           <MDBDataTable
             hover
             entriesOptions={[10, 20, 25]}
@@ -211,6 +225,54 @@ const finance = ({
             maxHeight="70vh"
             searchBottom={false}
           />
+          <div className="table-responsive">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    className="pl-0  border-0 font-size-4 font-weight-bold"
+                  >
+                    Customer Name
+                        </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
+                    Contact
+                  </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
+                    Payment
+                   </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
+                    Timestamp
+                   </th>
+
+                </tr>
+              </thead>
+
+              <tbody>
+                {
+                  allLogs && allLogs.map((item) => (
+                    <tr className="border border-color-2">
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.CUSTOMER && item.CUSTOMER.customer_name}</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.CUSTOMER && item.CUSTOMER.contact}</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.PAYMENT} rs.</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{new Date(item.TIMESTAMP).toLocaleString()}</td>
+                    </tr>
+                  ))
+                }
+
+              </tbody>
+            </table>
+          </div>
+
         </div>
       </div>
     </PageWrapper>
@@ -220,6 +282,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   sales: state.sale.sales,
   products: state.product.products,
+  allLogs: state.logs.transactionLogs
 });
 export default connect(mapStateToProps, { getProducts, deleteProduct, setSelectedSale, editProduct })(
   finance

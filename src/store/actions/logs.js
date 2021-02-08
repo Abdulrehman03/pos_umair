@@ -25,6 +25,28 @@ export const addLogs = (body) => async (dispatch) => {
 
   }
 };
+export const addTransactionLogs = (body) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    const res = await axios.post("/api/logs/transaction", body, config);
+    console.log(res);
+    dispatch({
+      type: "LOGS_ADDED",
+      payload: res.data,
+    });
+    dispatch(getTransactionLogs())
+  } catch (error) {
+    console.log(error.message);
+    dispatch({
+      type: "LOGS_ADDING_FAILED",
+    });
+
+  }
+};
 
 
 export const getLogs = () => async (dispatch) => {
@@ -33,6 +55,20 @@ export const getLogs = () => async (dispatch) => {
     console.log(res.data)
     dispatch({
       type: "LOGS_LOADED",
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: "LOGS_LOADING_FAILED",
+    });
+  }
+};
+export const getTransactionLogs = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/api/logs/transaction");
+    console.log(res.data)
+    dispatch({
+      type: "TANSACTION_LOGS_LOADED",
       payload: res.data,
     });
   } catch (err) {

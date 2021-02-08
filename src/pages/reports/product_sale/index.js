@@ -19,12 +19,13 @@ const finance = ({
   isAuthenticated,
   getProducts,
   sales,
+  allLogs,
   setSelectedSale,
   products,
   editProduct,
   deleteProduct
 }) => {
-
+  console.log(allLogs)
 
   const styles = {
     csvButton: {
@@ -88,7 +89,6 @@ const finance = ({
   })
   const [datatable, setDatatable] = React.useState({
     columns: [
-
       ...allColumns,
     ],
     rows: [],
@@ -100,18 +100,12 @@ const finance = ({
   useEffect(() => {
     if (sales) {
       sales.map((item) => {
-
-
         let startDate = new Date(new Date(state[0].startDate).toDateString())
         let endDate = new Date(new Date(state[0].endDate).toDateString())
         let saleDate = new Date(new Date(item.date_created).toDateString())
 
         if (startDate <= saleDate && endDate >= saleDate) {
-
-
-
           item.products.map((product) => {
-
             let data = {
               ...product,
               sale_date: new Date(item.date_created).toLocaleDateString()
@@ -123,7 +117,6 @@ const finance = ({
                 return true
               }
             })
-
             if (!check) {
               productsData.push(data)
             }
@@ -206,22 +199,48 @@ const finance = ({
             maxHeight="70vh"
             searchBottom={false}
           />
-          {/* <div class='row mb-20'>
-            <div class="col-lg-6">
-              <div class="input-group input-group-default">
-                <span class="input-group-text" style={{ height: '48px' }} id="inputGroup-sizing-default">Total Sale</span>
-                <input type="text" class="form-control" value={formData.total_sale} aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
-              </div>
-            </div>
+          <h5 style={{ color: "#00b074" }}>Logs</h5>
 
-            <div class="col-lg-6">
-              <div class="input-group input-group-default">
-                <span class="input-group-text" style={{ height: '48px' }} id="inputGroup-sizing-default">Total Profit</span>
-                <input type="text" value={formData.total_profit} class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
-              </div>
-            </div>
+          <div className="table-responsive">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    className="pl-0  border-0 font-size-4 font-weight-bold"
+                  >
+                    Product Name
+                        </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
+                    Quantity Added
+                        </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
+                    Timestamp
+                   </th>
 
-          </div> */}
+                </tr>
+              </thead>
+
+              <tbody>
+                {
+                  allLogs && allLogs.map((item) => (
+                    <tr className="border border-color-2">
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.PRODUCT_NAME}</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.QUANTITY}</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{new Date(item.TIMESTAMP).toLocaleString()}</td>
+                    </tr>
+                  ))
+                }
+
+              </tbody>
+            </table>
+          </div>
         </div>
 
 
@@ -233,6 +252,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   sales: state.sale.sales,
   products: state.product.products,
+  allLogs: state.logs.allLogs
 });
 export default connect(mapStateToProps, { getProducts, deleteProduct, setSelectedSale, editProduct })(
   finance

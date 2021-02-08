@@ -1,6 +1,7 @@
 const initialState = {
   loading: false,
-  allLogs: null
+  allLogs: null,
+  transactionLogs:null
 };
 
 export default function (state = initialState, action) {
@@ -11,6 +12,12 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
         allLogs: payload
+      };
+    case "TANSACTION_LOGS_LOADED":
+      return {
+        ...state,
+        loading: false,
+        transactionLogs: payload
       };
 
     default:

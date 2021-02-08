@@ -1,7 +1,7 @@
 import axios from "axios";
 import Router from "next/router";
 import { toast } from "react-toastify";
-import { editCustomer } from './customer'
+import { addTransactionLogs } from './logs'
 
 
 //Login User
@@ -50,7 +50,7 @@ export const addSale = (body) => async (dispatch) => {
     });
   }
 };
-export const editSale = (body) => async (dispatch) => {
+export const editSale = (body, data2) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -74,6 +74,9 @@ export const editSale = (body) => async (dispatch) => {
       draggable: false,
       progress: undefined,
     });
+    if (data2) {
+      dispatch(addTransactionLogs(data2))
+    }
     dispatch(getSales());
   } catch (error) {
     console.log(error.message);
