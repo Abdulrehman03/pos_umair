@@ -12,13 +12,11 @@ import { addDays } from 'date-fns';
 
 
 
-
 const finance = ({
   isAuthenticated,
   getProducts,
   sales,
   setSelectedSale,
-
   allLogs
 }) => {
   const styles = {
@@ -46,10 +44,18 @@ const finance = ({
       key: 'selection'
     }
   ]);
+  const [state2, setState2] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 7),
+      key: 'selection'
+    }
+  ]);
 
 
   let tabValues = {
     customer_name: "",
+    order_number: "",
     total_products: "",
     total_payment: "",
     pending_payment: "",
@@ -59,6 +65,7 @@ const finance = ({
 
   let headings = [
     "Customer Name",
+    "Order No.",
     "Total Products",
     "Total Payment",
     "Pending Payment",
@@ -88,14 +95,17 @@ const finance = ({
 
 
   let saleData = []
-
+  let [transactionLogs, setTransactionLogs] = useState([])
+  let [totalSale, setTotalSale] = useState(0)
+  let [pendingFilter, setPendingFilter] = useState(false)
 
   useEffect(() => {
     if (sales) {
       sales.map((item) => {
         let data = {
           _id: item._id,
-          customer_name: item.customer.customer_name,
+          customer_name: item.customer.customer_name + " ( " + item.customer.contact + " )",
+          order_number: new Date(item.date_created).getTime(),
           total_products: item.products.length,
           total_payment: item.total_price,
           pending_payment: item.pending_payment,
@@ -103,23 +113,46 @@ const finance = ({
           customer_data: item.customer,
           products_data: item.products,
         }
-        console.log(data)
         let startDate = new Date(new Date(state[0].startDate).toDateString())
         let endDate = new Date(new Date(state[0].endDate).toDateString())
         let saleDate = new Date(new Date(item.date_created).toDateString())
-        console.log(endDate + "End")
-        console.log(startDate + "start")
-        console.log(saleDate + "sale")
+
         if (startDate <= saleDate && endDate >= saleDate) {
-          console.log("working")
-          saleData.push(data)
+          if (pendingFilter) {
+
+            if (data.pending_payment > 0) {
+              saleData.push(data)
+              console.log(pendingFilter)
+              console.log(saleData)
+            }
+          }
+          if (!pendingFilter) {
+            console.log(saleData)
+            saleData.push(data)
+          }
         }
       })
     }
-  }, [state, sales])
-  console.log(saleData)
+  }, [state, sales, pendingFilter])
+  useEffect(() => {
+    let newArr = []
+    let total = 0
+    if (allLogs) {
+      allLogs.map((item) => {
+        let startDate = new Date(new Date(state2[0].startDate).toDateString())
+        let endDate = new Date(new Date(state2[0].endDate).toDateString())
+        let saleDate = new Date(new Date(item.TIMESTAMP).toDateString())
+        if (startDate <= saleDate && endDate >= saleDate) {
+          total = total + parseInt(item.PAYMENT)
+          newArr.push(item);
+        }
+      })
+      setTransactionLogs(newArr)
+      setTotalSale(total)
+    }
+  }, [state2, allLogs])
 
-  console.log(sales)
+  console.log(totalSale)
   useEffect(() => {
     if (saleData) {
       setDatatable({
@@ -143,6 +176,12 @@ const finance = ({
                 &nbsp; &nbsp;
                 <i
                   style={{ cursor: "pointer" }}
+                  class="fa fa-edit"
+                  onClick={() => handleEditReport(row)}
+                ></i>
+                &nbsp; &nbsp;
+                <i
+                  style={{ cursor: "pointer" }}
                   onClick={() => handleDeleteReport(row)}
                   class="fas fa-trash-alt"
                 ></i>
@@ -152,11 +191,17 @@ const finance = ({
         ],
       });
     }
-  }, [sales, state]);
-  console.log(datatable)
+  }, [sales, state, pendingFilter]);
 
 
-
+  const handleChangePending = (e) => {
+    if (e.target.value == 'all') {
+      setPendingFilter(false)
+    }
+    else {
+      setPendingFilter(true)
+    }
+  }
 
 
   const handleDeleteReport = async (row) => {
@@ -177,6 +222,12 @@ const finance = ({
     setSelectedSale(row);
     Router.push("/reports/sale/detail");
   };
+  const handleEditReport = (row) => {
+    console.log(row);
+    setSelectedSale(row);
+    Router.push("/reports/sale/edit");
+  };
+
 
   return (
     <PageWrapper
@@ -203,15 +254,23 @@ const finance = ({
               ranges={state}
               direction="horizontal"
             />;
+
             <input
               type="button"
               value="Add Sale"
               onClick={() => Router.push('/forms/sale')}
               className="btn btn-green btn-h-10 text-white min-width-px-100 float-right mt-6 rounded-5 text-uppercase"
             />
+
+
+            <div className="col-lg-4 mt-5 pl-0">
+              <select onChange={e => handleChangePending(e)} className='form-control'>
+                <option value='all'>All</option>
+                <option value='pending'>Pending</option>
+              </select>
+            </div>
           </div>
-          <button className="btn btn-primary line-height-reset h-100 btn-submit w-5  mt-5 ml-5 text-uppercase">All</button>
-          <button className="btn btn-primary line-height-reset h-100 btn-submit w-5 mt-5 ml-5 text-uppercase">Pending</button>
+
           <MDBDataTable
             hover
             entriesOptions={[10, 20, 25]}
@@ -226,6 +285,26 @@ const finance = ({
             searchBottom={false}
           />
           <div className="table-responsive">
+            <DateRangePicker
+              onChange={item => setState2([item.selection])}
+              showSelectionPreview={true}
+              moveRangeOnFirstSelection={false}
+              months={2}
+              ranges={state2}
+              direction="horizontal"
+            />;
+            <div class='row'>
+              <div className='col-lg-4'>
+                <label
+                  htmlFor="password"
+                  className="font-size-4 text-black-2 font-weight-semibold line-height-reset"
+                >
+                  Total Recovery
+                    </label>
+                <input className="form-control" value={totalSale} />
+              </div>
+            </div>
+
             <table className="table table-striped">
               <thead>
                 <tr>
@@ -245,6 +324,12 @@ const finance = ({
                     scope="col"
                     className="border-0 font-size-4 font-weight-bold"
                   >
+                    Order#
+                  </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
                     Payment
                    </th>
                   <th
@@ -259,10 +344,11 @@ const finance = ({
 
               <tbody>
                 {
-                  allLogs && allLogs.map((item) => (
+                  transactionLogs && transactionLogs.map((item) => (
                     <tr className="border border-color-2">
                       <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.CUSTOMER && item.CUSTOMER.customer_name}</td>
                       <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.CUSTOMER && item.CUSTOMER.contact}</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item && item.ORDER_NUMBER}</td>
                       <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.PAYMENT} rs.</td>
                       <td scope="row" className="pl-6 border-0 py-7 pr-0">{new Date(item.TIMESTAMP).toLocaleString()}</td>
                     </tr>
@@ -271,6 +357,7 @@ const finance = ({
 
               </tbody>
             </table>
+
           </div>
 
         </div>

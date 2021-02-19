@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import PageWrapper from "../components/PageWrapper";
-import LoadSheets from "./load-sheets/index";
-import LoadSheetsJdl from "./load-sheets-jdl/index";
+
 import Router from "next/router";
 import Loader from "../components/Loader/index";
 
@@ -99,8 +98,7 @@ const EditProfile = ({ user, isAuthenticated ,loading}) => {
                     </form>
                   </div>
                 </div>
-                <LoadSheets />
-                <LoadSheetsJdl />
+             
               </div>
             </div>
           </div>
@@ -113,6 +111,5 @@ const EditProfile = ({ user, isAuthenticated ,loading}) => {
 const mapStateToProps = (state) => ({
   user: state.auth.user,
   isAuthenticated: state.auth.isAuthenticated,
-  loading: state.sheets.loading,
 });
 export default connect(mapStateToProps)(EditProfile);

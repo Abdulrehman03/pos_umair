@@ -110,9 +110,7 @@ const finance = ({
           customer_data: item.customer,
           products_data: item.products,
         }
-        // console.log(state[0].startDate)
-        // console.log(state[0].endDate)
-        // console.log(new Date(item.date_created))
+      
         let startDate = new Date(new Date(state[0].startDate).toDateString())
         let endDate = new Date(new Date(state[0].endDate).toDateString())
         let saleDate = new Date(new Date(item.date_created).toDateString())

@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import PageWrapper from "../../components/PageWrapper";
+import PageWrapper from "../../../components/PageWrapper";
 import { connect } from "react-redux";
 import Router from "next/router";
-import { editProduct } from "../../store/actions/product";
-import { addSale, setSelectedSale } from "../../store/actions/sale";
-import GlobalContext from "../../context/GlobalContext";
+import { editProduct } from "../../../store/actions/product";
+import { editSale, setSelectedSale } from "../../../store/actions/sale";
+import GlobalContext from "../../../context/GlobalContext";
 import Select from 'react-select';
 
 
-
-import Link from 'next/link'
-import { constant } from "lodash";
 
 const Sourcing = ({
 
@@ -19,14 +16,14 @@ const Sourcing = ({
     customers,
     products,
     editProduct,
-    addSale,
+    editSale,
     setSelectedSale,
     sales,
-    user
+    selectedSale
 
 }) => {
     const gContext = useContext(GlobalContext);
-    let [selectedCustomer, setSelectedCustomer] = useState()
+    let [selectedCustomer, setSelectedCustomer] = useState(selectedSale && selectedSale.customer_data)
     let [selectedProduct, setSelectedProduct] = useState()
     let [allProducts, setAllProducts] = useState()
     let [allCustomers, setAllCustomers] = useState()
@@ -78,17 +75,13 @@ const Sourcing = ({
         }
     }, [sales, selectedCustomer])
 
-
-
-
-
     const [formData, setFormData] = useState({
+        _id: selectedSale && selectedSale._id,
         customer: "",
-        products: [],
-        total_price: "",
+        products: selectedSale && selectedSale.products_data,
+        total_price: selectedSale && selectedSale.total_payment,
         pending_payment: "",
         sale_profit: 0,
-        CREATED_BY: user && user._id
     });
     useEffect(() => {
         if (!isAuthenticated) {
@@ -102,7 +95,7 @@ const Sourcing = ({
 
     const onSubmit = async (e) => {
         e.preventDefault();
-        // console.log(selectedCustomer)
+
         formData.customer = selectedCustomer
         formData.pending_payment = formData.total_price
         setFormData({ ...formData, customer: formData.customer, pending_payment: formData.pending_payment })
@@ -112,16 +105,15 @@ const Sourcing = ({
             profit = item.total_price - profit
             formData.sale_profit = formData.sale_profit + profit
         })
-
-
-
-        await addSale(formData)
+        console.log(formData)
+        await editSale(formData)
         formData.products.map(async (item) => {
 
             let quantity = item.quantity - parseInt(item.selected_quantity)
             let data = {
                 _id: item._id,
-                quantity: quantity
+                quantity: quantity,
+                
             }
 
             await editProduct(data, "cart")
@@ -141,8 +133,6 @@ const Sourcing = ({
 
 
     const onSelectProduct = (e) => {
-
-
         let check = formData.products.find((item) => {
             return item._id == e.value
         })
@@ -160,8 +150,8 @@ const Sourcing = ({
             setFormData({ ...formData, products: formData.products })
         }
         updateTotal()
-
     }
+
     const handleOnChangeQuantity = (e, product) => {
         let arr = formData.products
         arr.map((item) => {
@@ -197,10 +187,18 @@ const Sourcing = ({
         let arr = formData.products.filter((item) => {
             return item._id != product._id
         })
-
-
         formData.products = arr
         setFormData({ ...formData, products: arr })
+        formData.products.map(async (item) => {
+
+            let quantity = item.quantity - parseInt(item.selected_quantity)
+            let data = {
+                _id: item._id,
+                quantity: quantity
+            }
+            await editProduct(data, "cart")
+        })
+
         updateTotal()
     }
     const updateTotal = () => {
@@ -226,6 +224,7 @@ const Sourcing = ({
         gContext.toggleReceiptModal(modalData);
         setSelectedSale(modalData)
     }
+
     return (
         <>
             <PageWrapper
@@ -245,13 +244,13 @@ const Sourcing = ({
                             <div className="row">
                                 <div className="col-xxxl-12 px-lg-13 px-6">
                                     <h5 className="font-size-6 font-weight-semibold mb-11">
-                                        Add Sale
+                                        Edit Sale
                                     </h5>
                                     <div className="contact-form bg-white shadow-8 rounded-4 pl-sm-10 pl-4 pr-sm-11 pr-4 pt-15 pb-13">
                                         <form action="" onSubmit={(e) => onSubmit(e)}>
                                             <fieldset>
                                                 <div className="row mb-xl-1 mb-9">
-                                                    <div className="col-lg-6">
+                                                    {/* <div className="col-lg-6">
                                                         <div className="form-group">
                                                             <label
                                                                 htmlFor="aboutTextarea"
@@ -262,7 +261,7 @@ const Sourcing = ({
 
                                                             <Select onChange={(e) => onChangeCustomer(e)} options={allCustomers} />
                                                         </div>
-                                                    </div>
+                                                    </div> */}
                                                     {
                                                         selectedCustomer && (
                                                             <div className="col-6 col-lg-6">
@@ -284,34 +283,26 @@ const Sourcing = ({
                                                                         <div className="col-6 col-lg-6">
                                                                             <ul className="list-unstyled mb-1 card-tag-list">
                                                                                 <li>
-
                                                                                     <a className="bg-regent-opacity-15 text-denim font-size-3 rounded-3">
                                                                                         <i className="icon icon-pin-3 mr-2 font-weight-bold"></i>{" "}
                                                                                         {selectedCustomer.address}
                                                                                     </a>
-
                                                                                 </li>
                                                                                 <li>
-
                                                                                     <a className="bg-regent-opacity-15 text-orange font-size-3 rounded-3">
                                                                                         <i className="fa fa-briefcase mr-2 font-weight-bold"></i>{" "}
                                                                                         {new Date(selectedCustomer.date_created).toLocaleDateString()}
                                                                                     </a>
 
                                                                                 </li>
-
                                                                             </ul>
                                                                             <ul className="list-unstyled mb-1 card-tag-list">
                                                                                 <li>
-
                                                                                     <a className="bg-regent-opacity-15 text-denim font-size-3 rounded-3">
                                                                                         <i className="fas fa-money-bill mr-2 font-weight-bold"></i>{" "}
                                                                                            Pending Payment : {pendingPayment}
                                                                                     </a>
-
                                                                                 </li>
-
-
                                                                             </ul>
                                                                         </div>
 
@@ -325,7 +316,7 @@ const Sourcing = ({
                                                 {
                                                     selectedCustomer && (
                                                         <>
-                                                            <div className="row">
+                                                            {/* <div className="row">
                                                                 <div className="col-md-12">
                                                                     <label
                                                                         htmlFor="aboutTextarea"
@@ -335,8 +326,7 @@ const Sourcing = ({
                                                           </label>
                                                                     <Select onChange={(e) => onSelectProduct(e)} options={allProducts} />
                                                                 </div>
-                                                            </div>
-
+                                                            </div> */}
                                                             <>
                                                                 <div className="row">
                                                                     <div className="table-responsive mt-10 ml-5">
@@ -466,10 +456,10 @@ const Sourcing = ({
 };
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
-    user: state.auth.user,
     customers: state.customer.customers,
     products: state.product.products,
-    sales: state.sale.sales
+    sales: state.sale.sales,
+    selectedSale: state.sale.selectedSale
 
 });
-export default connect(mapStateToProps, { editProduct, addSale, setSelectedSale })(Sourcing);
+export default connect(mapStateToProps, { editProduct, editSale, setSelectedSale })(Sourcing);

@@ -1,3 +1,5 @@
+
+
 const initialState = {
   loading: false,
   sales: null,

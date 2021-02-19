@@ -6,13 +6,12 @@ import { toast } from "react-toastify";
 import { getProducts } from "./product";
 import { getCustomers } from "./customer";
 import { getSales } from "./sale";
+import { getTransactionLogs } from "./logs";
 
 //Load User
 export const loadUser = () => async (dispatch) => {
 
-  dispatch(getProducts());
-  dispatch(getCustomers());
-  dispatch(getSales());
+
   if (localStorage.token) {
     setAuthToken(localStorage.token);
   }
@@ -23,6 +22,10 @@ export const loadUser = () => async (dispatch) => {
       type: "USER_LOADED",
       payload: res.data,
     });
+    dispatch(getSales());
+    dispatch(getProducts());
+    dispatch(getCustomers());
+    dispatch(getTransactionLogs());
   } catch (err) {
     dispatch({
       type: "AUTH_ERROR",

@@ -20,7 +20,10 @@ const SaleSchema = new mongoose.Schema({
   date_created: {
     type: Date,
     default: Date.now
-  }
+  },
+  CREATED_BY: {
+    type: String
+  },
 });
 
 module.exports = mongoose.model('sale', SaleSchema);

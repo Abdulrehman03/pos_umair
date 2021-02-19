@@ -148,7 +148,7 @@ export const getCustomers = () => async (dispatch) => {
 };
 export const setSelectedCustomer = (data) => async (dispatch) => {
   dispatch({
-    type: "CUSTOMER_DATA",
+    type: "SET_CUSTOMER_DATA",
     payload: data,
   });
 };

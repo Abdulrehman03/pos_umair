@@ -3,7 +3,8 @@ import PageWrapper from "../../../components/PageWrapper";
 import { connect } from "react-redux";
 import { MDBDataTable } from "mdbreact";
 import Router from "next/router";
-import { getProducts, deleteProduct, setSelectedProduct } from "../../../store/actions/product";
+import { getProducts, deleteProduct } from "../../../store/actions/product";
+import { setSelectedCustomer } from "../../../store/actions/customer";
 import GlobalContext from "../../../context/GlobalContext";
 import { CSVLink } from "react-csv";
 
@@ -13,8 +14,9 @@ const finance = ({
   isAuthenticated,
   getProducts,
   customers,
-  setSelectedProduct,
-  deleteProduct
+  setSelectedCustomer,
+  deleteProduct,
+  sales
 }) => {
   const styles = {
     csvButton: {
@@ -40,6 +42,7 @@ const finance = ({
     contact: "",
     address: "",
     description: "",
+    pending_payment: ""
   };
 
 
@@ -48,6 +51,7 @@ const finance = ({
     "Contact #",
     "Address",
     "Description",
+    "Pending Ammount"
   ];
   let allColumns = [];
   Object.keys(tabValues).map((key, index) => {
@@ -58,6 +62,7 @@ const finance = ({
     };
     allColumns.push(data);
   });
+  let [customerRows, setCustomerRows] = useState([])
   const [datatable, setDatatable] = React.useState({
     columns: [
       {
@@ -69,12 +74,40 @@ const finance = ({
     ],
     rows: [],
   });
+
   useEffect(() => {
-    if (customers) {
+    if (sales && customers) {
+      customers.map((customer) => {
+        setCustomerRows([])
+        let data = {
+          _id: customer._id,
+          customer_name: customer.customer_name,
+          contact: customer.contact,
+          address: customer.address,
+          description: customer.description,
+          pending_payment: 0
+        };
+        sales.map((sale) => {
+          if (sale.customer._id == customer._id) {
+            data.pending_payment = data.pending_payment + sale.pending_payment
+          }
+        })
+        customerRows.push(data)
+        setCustomerRows(customerRows)
+      })
+    }
+  }, [customers, sales])
+
+
+
+
+
+  useEffect(() => {
+    if (customerRows) {
       setDatatable({
         ...datatable,
         rows: [
-          ...customers.map((row, order) => ({
+          ...customerRows.map((row, order) => ({
             ...row,
             badge: (
               <>
@@ -101,23 +134,23 @@ const finance = ({
         ],
       });
     }
-  }, [customers]);
+  }, [customerRows]);
 
   const handleEditReport = (row) => {
     console.log(row);
-    setSelectedProduct(row);
+    setSelectedCustomer(row);
     Router.push("/reports/product/edit");
   };
   const handleDeleteReport = (row) => {
     console.log(row);
-    setSelectedProduct(row);
+    setSelectedCustomer(row);
     gContext.toggleDeleteModal("Products");
   };
 
   const handleViewDetail = (row) => {
     console.log(row);
-    setSelectedProduct(row);
-    Router.push("/reports/finance/detail");
+    setSelectedCustomer(row);
+    Router.push("/reports/customer/detail");
   };
 
   return (
@@ -135,11 +168,8 @@ const finance = ({
       >
         <div className="container">
           <h5 style={{ color: "#00b074" }}>Customers</h5>
-          {/* <div style={styles.csv/Button}> */}
+
           <div>
-            {/* <CSVLink filename={"finance-data.csv"} data={datatable.rows}>
-              CSV
-            </CSVLink> */}
             <input
               type="button"
               value="Add Customer"
@@ -168,7 +198,8 @@ const finance = ({
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   customers: state.customer.customers,
+  sales: state.sale.sales,
 });
-export default connect(mapStateToProps, { getProducts, deleteProduct, setSelectedProduct })(
+export default connect(mapStateToProps, { getProducts, deleteProduct, setSelectedCustomer, })(
   finance
 );

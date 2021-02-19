@@ -13,6 +13,7 @@ const GlobalProvider = ({ children }) => {
   const [candidateViewModal, setCandidateViewModal] = useState(false);
   const [financeViewModal, setFinanceViewModal] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+  const [receiptModalVisible, setReceiptModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState({
     category: "",
     flag: false
@@ -53,6 +54,10 @@ const GlobalProvider = ({ children }) => {
   const togglePaymentModal = () => {
     setPaymentModalVisible(!paymentModalVisible);
   };
+  const toggleReceiptModal = () => {
+    console.log("ModalReceipt")
+    setReceiptModalVisible(!receiptModalVisible);
+  };
 
   const toggleSignInModal = () => {
     setSignInModalVisible(!signInModalVisible);
@@ -83,6 +88,8 @@ const GlobalProvider = ({ children }) => {
         toggleDeleteModal,
         deleteModalVisible,
         togglePaymentModal,
+        toggleReceiptModal,
+        receiptModalVisible,
         paymentModalVisible,
         themeDark,
         toggleTheme,

@@ -56,7 +56,6 @@ export const editSale = (body, data2) => async (dispatch) => {
       "Content-Type": "application/json",
     },
   };
-
   try {
     dispatch(setLoading());
     const res = await axios.put(`/api/sale/${body._id}`, body, config);
@@ -143,10 +142,19 @@ export const getSales = () => async (dispatch) => {
   dispatch(setLoading());
   try {
     const res = await axios.get("/api/sale");
-
+    let user = localStorage.getItem('user');
+    user = JSON.parse(user)
+    console.log(user)
+    let filtered = []
+    if (user) {
+      filtered = res.data.filter((item) => {
+        return user._id == item.CREATED_BY || user.email == 'admin@mail.com'
+      })
+    }
+    console.log(filtered)
     dispatch({
       type: "SALE_LOADED",
-      payload: res.data,
+      payload: filtered,
     });
   } catch (err) {
     dispatch({

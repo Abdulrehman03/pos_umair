@@ -9,9 +9,15 @@ const TransactionLogsSchema = new mongoose.Schema({
   PAYMENT: {
     type: String
   },
+  ORDER_NUMBER: {
+    type: String
+  },
+  CREATED_BY: {
+    type: String
+  },
   TIMESTAMP: {
     type: Date,
     default: Date.now
   }
 });
-module.exports  = mongoose.model("transaction_logs", TransactionLogsSchema)
+module.exports = mongoose.model("transaction_logs", TransactionLogsSchema)

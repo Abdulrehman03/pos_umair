@@ -17,6 +17,7 @@ import ModalSignUp from "../ModalSignUp";
 
 import ModalDelete from "../ModalDelete";
 import ModalPayment from "../ModalPayment";
+import ModalReceipt from "../ModalReceipt/index";
 
 import GlobalContext from "../../context/GlobalContext";
 
@@ -113,11 +114,13 @@ const Layout = ({ children, pageContext }) => {
             {children}
           </div>
 
-          <ModalVideo />
+          <ModalReceipt />  <ModalVideo />
           <ModalApplication />
           <ModalSignIn />
           <ModalSignUp />
+          <ModalSignUp />
           <ModalPayment />
+
           <ModalDelete />
         </div>
       </ThemeProvider>
@@ -153,11 +156,13 @@ const Layout = ({ children, pageContext }) => {
             <SidebarDashboard />
             {children}
           </div>
-
+          <ModalReceipt />
           <ModalVideo />
           <ModalApplication />
           <ModalSignIn />
+          <ModalSignUp />
           <ModalPayment />
+
           <ModalDelete />
         </div>
       </ThemeProvider>
@@ -187,11 +192,13 @@ const Layout = ({ children, pageContext }) => {
             <Footer isDark={gContext.footerDark} />
           </div>
 
-
+          <ModalReceipt />
           <ModalVideo />
           <ModalApplication />
           <ModalSignIn />
+          <ModalSignUp />
           <ModalPayment />
+
           <ModalDelete />
         </div>
       </ThemeProvider>

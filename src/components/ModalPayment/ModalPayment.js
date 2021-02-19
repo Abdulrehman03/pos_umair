@@ -5,6 +5,7 @@ import { Modal } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
 import ProfileSidebar from "../ProfileSidebar";
 import { editSale } from '../../store/actions/sale'
+import { toast } from "react-toastify";
 
 import { connect } from 'react-redux'
 
@@ -22,7 +23,7 @@ const ModalStyled = styled(Modal)`
 `;
 
 const ModalSignIn = (props) => {
-  const { selectedSale, editSale } = props
+  const { selectedSale, editSale, user } = props
   const gContext = useContext(GlobalContext);
 
   const handleClose = () => {
@@ -46,10 +47,23 @@ const ModalSignIn = (props) => {
         SALE_id: selectedSale._id,
         CUSTOMER: selectedSale.customer_data,
         PAYMENT: formData.payment,
+        ORDER_NUMBER: new Date(selectedSale.date_created).getTime(),
+        CREATED_BY: user && user._id
       }
       console.log(data)
       console.log(data2)
       editSale(data, data2)
+    }
+    else {
+      toast.error("Failed!", {
+        position: "bottom-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: false,
+        progress: undefined,
+      });
     }
     gContext.togglePaymentModal();
 
@@ -138,6 +152,7 @@ const ModalSignIn = (props) => {
 const mapStateToProps = (state) => ({
 
   selectedSale: state.sale.selectedSale,
+  user: state.auth.user
 });
 
 export default connect(mapStateToProps, { editSale })(ModalSignIn);

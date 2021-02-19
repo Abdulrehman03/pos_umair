@@ -67,9 +67,17 @@ export const getTransactionLogs = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/logs/transaction");
     console.log(res.data)
+    let user = localStorage.getItem('user');
+    user = JSON.parse(user)
+    let filtered = []
+    if (user) {
+      filtered = res.data.filter((item) => {
+        return user._id == item.CREATED_BY || user.email == 'admin@mail.com'
+      })
+    }
     dispatch({
       type: "TANSACTION_LOGS_LOADED",
-      payload: res.data,
+      payload: filtered,
     });
   } catch (err) {
     dispatch({
