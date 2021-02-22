@@ -14,7 +14,8 @@ const finance = ({
   getProducts,
   products,
   setSelectedProduct,
-  deleteProduct
+  deleteProduct,
+  user
 }) => {
   const styles = {
     csvButton: {
@@ -34,6 +35,13 @@ const finance = ({
     }
     getProducts();
   }, [isAuthenticated]);
+
+  
+  useEffect(() => {
+    if (user && user.email != 'admin@mail.com') {
+      Router.push("/dashboard-main");
+    }
+  }, [user]);
 
   let financeObj = {
     barcode: "",
@@ -138,15 +146,12 @@ const finance = ({
       >
         <div className="container">
           <h5 style={{ color: "#00b074" }}>Products</h5>
-          {/* <div style={styles.csv/Button}> */}
           <div>
-            {/* <CSVLink filename={"finance-data.csv"} data={datatable.rows}>
-              CSV
-            </CSVLink> */}
+
             <input
               type="button"
               value="Add Product"
-              onClick={()=>Router.push('/forms/product')}
+              onClick={() => Router.push('/forms/product')}
               className="btn btn-green btn-h-10 text-white min-width-px-100 float-right mt-6 rounded-5 text-uppercase"
             />
           </div>
@@ -170,6 +175,7 @@ const finance = ({
 };
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user,
   products: state.product.products,
 });
 export default connect(mapStateToProps, { getProducts, deleteProduct, setSelectedProduct })(

@@ -8,6 +8,7 @@ import { setSelectedSale } from "../../../store/actions/sale";
 import { DateRangePicker } from 'react-date-range'
 import GlobalContext from "../../../context/GlobalContext";
 import { addDays } from 'date-fns';
+import ReactToPrint from 'react-to-print';
 
 
 
@@ -17,7 +18,8 @@ const finance = ({
   getProducts,
   sales,
   setSelectedSale,
-  allLogs
+  allLogs,
+  user
 }) => {
   const styles = {
     csvButton: {
@@ -119,15 +121,12 @@ const finance = ({
 
         if (startDate <= saleDate && endDate >= saleDate) {
           if (pendingFilter) {
-
             if (data.pending_payment > 0) {
               saleData.push(data)
-              console.log(pendingFilter)
-              console.log(saleData)
+
             }
           }
           if (!pendingFilter) {
-            console.log(saleData)
             saleData.push(data)
           }
         }
@@ -152,7 +151,7 @@ const finance = ({
     }
   }, [state2, allLogs])
 
-  console.log(totalSale)
+
   useEffect(() => {
     if (saleData) {
       setDatatable({
@@ -192,6 +191,8 @@ const finance = ({
       });
     }
   }, [sales, state, pendingFilter]);
+  console.log(datatable)
+
 
 
   const handleChangePending = (e) => {
@@ -205,25 +206,25 @@ const finance = ({
 
 
   const handleDeleteReport = async (row) => {
-    console.log(row);
+
     setSelectedSale(row);
     gContext.toggleDeleteModal("SALES");
 
   };
   const handlePayment = async (row) => {
-    console.log(row);
+
     setSelectedSale(row);
     gContext.togglePaymentModal();
 
   };
 
   const handleViewDetail = (row) => {
-    console.log(row);
+
     setSelectedSale(row);
     Router.push("/reports/sale/detail");
   };
   const handleEditReport = (row) => {
-    console.log(row);
+
     setSelectedSale(row);
     Router.push("/reports/sale/edit");
   };
@@ -284,6 +285,68 @@ const finance = ({
             maxHeight="70vh"
             searchBottom={false}
           />
+
+          <div style={{ textAlign: 'center' }}>
+            <ReactToPrint
+
+
+              trigger={() => {
+                return <input
+                  type="button"
+                  value="Print"
+
+                  className="btn btn-green btn-h-30 text-white min-width-px-60 rounded-5 text-uppercase"
+                />
+              }}
+              content={() => document.getElementById("printBodyView")}
+            />
+          </div>
+          <div id='printBodyView' className="bg-white pt-9 pb-7 px-5 rounded-4 mb-9 feature-cardOne-adjustments w-100">
+            <div style={{ textAlign: 'center' }}>
+              <h3>Umair Store</h3>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <h5>By {user && user.name}</h5>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: "20px", lineHeight: "6px" }}>
+              <p>{new Date(state[0].startDate).toDateString()} - {new Date(state[0].endDate).toDateString()} </p>
+            </div>
+            <div>
+              <table className="table ">
+                <thead class="thead">
+                  <th scope='col' className="pl-1  border-0 font-size-4 font-weight-bold">Customer</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Order#</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Total Products</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Total Payment</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Pending Payment</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Date Created</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Remarks</th>
+                </thead>
+                <tbody>
+
+
+                  {datatable && datatable.rows && datatable.rows.map((item) => (
+                    <tr className="">
+                      <td className="table-y-middle py-7 min-width-px-100">{item.customer_name}</td>
+                      <td className="table-y-middle py-7 min-width-px-100">{item.order_number}</td>
+                      <td className="table-y-middle py-7 min-width-px-100">{item.total_products}</td>
+                      <td className="table-y-middle py-7 min-width-px-100">{item.total_payment}</td>
+                      <td className="table-y-middle py-7 min-width-px-100">{item.pending_payment}</td>
+                      <td className="table-y-middle py-7 min-width-px-100">{item.date_created}</td>
+                      <td className="table-y-middle py-7 min-width-px-100"> </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+
+          </div>
+
+
+
+
+
           <div className="table-responsive">
             <DateRangePicker
               onChange={item => setState2([item.selection])}
@@ -367,6 +430,7 @@ const finance = ({
 };
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user,
   sales: state.sale.sales,
   products: state.product.products,
   allLogs: state.logs.transactionLogs

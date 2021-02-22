@@ -223,6 +223,7 @@ const Sourcing = ({
             created_at: new Date(),
             pending_payment: pendingPayment
         }
+        console.log(modalData)
         gContext.toggleReceiptModal(modalData);
         setSelectedSale(modalData)
     }

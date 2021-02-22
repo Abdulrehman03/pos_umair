@@ -8,6 +8,7 @@ import { setSelectedSale } from "../../../store/actions/sale";
 import { DateRangePicker } from 'react-date-range'
 import GlobalContext from "../../../context/GlobalContext";
 import { addDays } from 'date-fns';
+import ReactToPrint from 'react-to-print';
 
 
 
@@ -23,7 +24,8 @@ const finance = ({
   setSelectedSale,
   products,
   editProduct,
-  deleteProduct
+  deleteProduct,
+  user
 }) => {
   console.log(allLogs)
 
@@ -63,8 +65,8 @@ const finance = ({
     product_name: "",
     selected_quantity: "",
     total_price: "",
-    sale_date: "",
   };
+
 
 
   let headings = [
@@ -72,7 +74,7 @@ const finance = ({
     "Product Name",
     "Quantity",
     "Total Price",
-    "Created At",
+
   ];
   let allColumns = [];
   Object.keys(tabValues).map((key, index) => {
@@ -107,8 +109,7 @@ const finance = ({
         if (startDate <= saleDate && endDate >= saleDate) {
           item.products.map((product) => {
             let data = {
-              ...product,
-              sale_date: new Date(item.date_created).toLocaleDateString()
+              ...product
             }
             let check = productsData.find((prod) => {
               if (prod._id == data._id) {
@@ -124,8 +125,6 @@ const finance = ({
         }
       })
     }
-
-
   }, [state, sales])
 
 
@@ -156,7 +155,6 @@ const finance = ({
         formData.total_profit = formData.total_profit + parseInt(item.sale_profit)
       })
       setFormData({ ...formData, total_profit: formData.total_profit, total_sale: formData.total_sale })
-
     }
   }, [datatable])
 
@@ -184,8 +182,6 @@ const finance = ({
             ranges={state}
             direction="horizontal"
           />;
-          {/* <div style={styles.csv/Button}> */}
-
           <MDBDataTable
             hover
             entriesOptions={[10, 20, 25]}
@@ -199,8 +195,54 @@ const finance = ({
             maxHeight="70vh"
             searchBottom={false}
           />
-          <h5 style={{ color: "#00b074" }}>Logs</h5>
+          <ReactToPrint
+            trigger={() => {
+              return <input
+                type="button"
+                value="Print"
 
+                className="btn btn-green btn-h-30 text-white min-width-px-60 rounded-5 text-uppercase"
+              />
+            }}
+            content={() => document.getElementById("printBodyView")}
+          />
+          <div id='printBodyView' className="bg-white pt-9 pb-7 px-5 rounded-4 mb-9 feature-cardOne-adjustments w-100">
+            <div style={{ textAlign: 'center' }}>
+              <h3>Umair Store</h3>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <h5>By {user && user.name}</h5>
+            </div>
+            <div style={{ textAlign: 'center', marginTop: "20px", lineHeight: "6px" }}>
+              <p>{new Date(state[0].startDate).toDateString()} - {new Date(state[0].endDate).toDateString()} </p>
+            </div>
+            <div>
+              <table className="table ">
+                <thead class="thead">
+                  <th scope='col' className="pl-1  border-0 font-size-4 font-weight-bold">Barcode</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Product Name</th>
+                  <th scope='col' className="pl-0  border-0 font-size-4 font-weight-bold">Quantity</th>
+
+                </thead>
+                <tbody>
+
+
+                  {datatable && datatable.rows && datatable.rows.map((item) => (
+                    <tr className="">
+                      <td className="table-y-middle py-7 min-width-px-100">{item.barcode}</td>
+                      <td className="table-y-middle py-7 min-width-px-100">{item.product_name}</td>
+                      <td className="table-y-middle py-7 min-width-px-100">{item.selected_quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+
+          </div>
+
+
+          <h5 style={{ color: "#00b074" }}>Logs</h5>
           <div className="table-responsive">
             <table className="table table-striped">
               <thead>
@@ -250,6 +292,7 @@ const finance = ({
 };
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user,
   sales: state.sale.sales,
   products: state.product.products,
   allLogs: state.logs.allLogs

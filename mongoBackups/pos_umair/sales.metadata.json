@@ -1,0 +1,1 @@
+{"options":{},"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_","ns":"pos_umair.sales"}],"uuid":"0be6a2c54a83490f8a86bd3c61f2f4a6"}

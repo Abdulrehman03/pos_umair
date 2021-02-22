@@ -4,8 +4,9 @@ import { Collapse } from "react-bootstrap";
 import GlobalContext from "../../context/GlobalContext";
 import imgL from "../../assets/image/logo-main-black.png";
 import { useRouter } from 'next/router'
+import { connect } from 'react-redux'
 
-const Sidebar = () => {
+const Sidebar = ({ user }) => {
   const gContext = useContext(GlobalContext);
   const [open, setOpen] = useState(false);
   const [openForm, setOpenForm] = useState(false);
@@ -86,13 +87,19 @@ const Sidebar = () => {
             </li>
             <Collapse in={open}>
               <div id="example-collapse-text">
-                <li className="">
-                  <Link href="/reports/product">
-                    <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/reports/product' && 'active'}`}>
-                      <i className="fas fa-user mr-7"></i>Product{" "}
-                    </a>
-                  </Link>
-                </li>
+                {
+                  user && user.email == 'admin@mail.com' && (
+                    <li className="">
+                      <Link href="/reports/product">
+                        <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/reports/product' && 'active'}`}>
+                          <i className="fas fa-user mr-7"></i>Product{" "}
+                        </a>
+                      </Link>
+                    </li>
+                  )
+                }
+
+
                 <li className="">
                   <Link href="/reports/product_sale">
                     <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/reports/product_sale' && 'active'}`}>
@@ -107,13 +114,22 @@ const Sidebar = () => {
                     </a>
                   </Link>
                 </li>
-                <li className="">
-                  <Link href="/reports/profit">
-                    <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/reports/profit' && 'active'}`}>
-                      <i className="fas fa-user mr-7"></i>Profits{" "}
-                    </a>
-                  </Link>
-                </li>
+
+
+                {
+                  user && user.email == 'admin@mail.com' && (
+                    <li className="">
+                      <Link href="/reports/profit">
+                        <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/reports/profit' && 'active'}`}>
+                          <i className="fas fa-user mr-7"></i>Profits{" "}
+                        </a>
+                      </Link>
+                    </li>
+                  )
+                }
+
+
+
                 <li className="">
                   <Link href="/reports/customer">
                     <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/reports/customer' && 'active'}`}>
@@ -161,13 +177,18 @@ const Sidebar = () => {
             </li>
             <Collapse in={openForm}>
               <div id="example-collapse-text">
-                <li className="">
-                  <Link href="/forms/product">
-                    <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/forms/product' && 'active'}`}>
-                      <i className="fas fa-user mr-7"></i>Product {" "}
-                    </a>
-                  </Link>
-                </li>
+                {
+                  user && user.email == 'admin@mail.com' && (
+                    <li className="">
+                      <Link href="/forms/product">
+                        <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/forms/product' && 'active'}`}>
+                          <i className="fas fa-user mr-7"></i>Product {" "}
+                        </a>
+                      </Link>
+                    </li>
+                  )
+                }
+
                 <li className="">
                   <Link href="/forms/sale">
                     <a className={`px-10 ml-7 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/forms/sale' && 'active'}`}>
@@ -201,5 +222,8 @@ const Sidebar = () => {
     </>
   );
 };
+const mapStateToProps = (state) => ({
+  user: state.auth.user
+})
 
-export default Sidebar;
+export default connect(mapStateToProps)(Sidebar);

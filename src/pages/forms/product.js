@@ -8,7 +8,8 @@ import { addProduct } from "../../store/actions/product";
 
 const Sourcing = ({
   addProduct,
-  isAuthenticated
+  isAuthenticated,
+  user
 
 }) => {
 
@@ -24,8 +25,13 @@ const Sourcing = ({
     if (!isAuthenticated) {
       Router.push("/");
     }
-
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (user && user.email != 'admin@mail.com') {
+      Router.push("/dashboard-main");
+    }
+  }, [user]);
 
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -70,7 +76,7 @@ const Sourcing = ({
                                 htmlFor="aboutTextarea"
                                 className="d-block text-black-2 font-size-4 font-weight-semibold mb-4"
                               >
-                               Bar Code
+                                Bar Code
                               </label>
                               <input
                                 name="barcode"
@@ -78,7 +84,7 @@ const Sourcing = ({
                                 value={formData.barcode}
                                 type="text"
                                 required
-                                
+
                                 className="form-control h-px-48"
                                 id="namedash"
                               // placeholder="Enter Email"
@@ -200,5 +206,6 @@ const Sourcing = ({
 };
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user
 });
 export default connect(mapStateToProps, { addProduct })(Sourcing);

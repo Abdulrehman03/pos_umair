@@ -81,7 +81,7 @@ const ModalReceipt = (props) => {
 
 
                 <div style={{ textAlign: 'center' }}>
-                  <h3>HS Store Okara</h3>
+                  <h3>Umair Store</h3>
 
                 </div>
                 <div style={{ textAlign: 'center' }}>
