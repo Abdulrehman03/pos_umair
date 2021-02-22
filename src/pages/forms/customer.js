@@ -144,7 +144,7 @@ const Sourcing = ({
                                 onChange={(e) => onChange(e)}
                                 value={formData.description}
                                 type="text"
-                                required
+                               
                                 className="form-control h-px-48"
                                 id="namedash"
                               // placeholder="Enter Email"

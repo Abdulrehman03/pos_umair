@@ -266,7 +266,7 @@ const Sourcing = ({
                     months={2}
                     ranges={state}
                     direction="horizontal"
-                  />;
+                  />
             <input
                     type="button"
                     value="Add Sale"

@@ -3,46 +3,41 @@ import React, { useState, useEffect } from "react";
 import PageWrapper from "../../../components/PageWrapper";
 import { connect } from "react-redux";
 import Router from "next/router";
-import { editProduct } from "../../../store/actions/product";
+import { editCustomer } from "../../../store/actions/customer";
 import { v4 as uuidv4 } from "uuid";
-import SearchReact from "react-select";
+
 
 const Sourcing = ({
-  editProduct,
+  editCustomer,
   isAuthenticated,
-  selectedProduct
+  selectedCustomer
+
 }) => {
 
 
   const [formData, setFormData] = useState({
-    _id: '',
-    barcode: '',
-    product_name: "",
-    cost_price: "",
-    sale_price: "",
-    quantity: "",
+    _id: "",
+    customer_name: "",
+    contact: "",
+    address: "",
+    description: "",
   });
   useEffect(() => {
     if (!isAuthenticated) {
       Router.push("/");
     }
   }, [isAuthenticated]);
+
   useEffect(() => {
-    if (selectedProduct) {
-      setFormData({
-        _id: selectedProduct._id,
-        barcode: selectedProduct.barcode,
-        product_name: selectedProduct.product_name,
-        cost_price: selectedProduct.cost_price,
-        sale_price: selectedProduct.sale_price,
-        quantity: selectedProduct.quantity,
-      })
-    }
-  }, [selectedProduct]);
-  console.log(selectedProduct)
+    setFormData({
 
-
-
+      _id: selectedCustomer._id,
+      customer_name: selectedCustomer.customer_name,
+      contact: selectedCustomer.contact,
+      address: selectedCustomer.address,
+      description: selectedCustomer.description,
+    })
+  }, [selectedCustomer])
   const onChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -50,7 +45,7 @@ const Sourcing = ({
   const onSubmit = (e) => {
     e.preventDefault();
     console.log(formData);
-    editProduct(formData);
+    editCustomer(formData);
 
   };
 
@@ -74,8 +69,8 @@ const Sourcing = ({
               <div className="row">
                 <div className="col-xxxl-9 px-lg-13 px-6">
                   <h5 className="font-size-6 font-weight-semibold mb-11">
-                    Add Customer
-                </h5>
+                    Edit Customer
+                  </h5>
                   <div className="contact-form bg-white shadow-8 rounded-4 pl-sm-10 pl-4 pr-sm-11 pr-4 pt-15 pb-13">
                     <form action="" onSubmit={(e) => onSubmit(e)}>
                       <fieldset>
@@ -88,7 +83,7 @@ const Sourcing = ({
                                 className="d-block text-black-2 font-size-4 font-weight-semibold mb-4"
                               >
                                 Customer Name
-                            </label>
+                              </label>
                               <input
                                 name="customer_name"
                                 onChange={(e) => onChange(e)}
@@ -110,7 +105,7 @@ const Sourcing = ({
                                 className="d-block text-black-2 font-size-4 font-weight-semibold mb-4"
                               >
                                 Address
-                            </label>
+                              </label>
                               <input
                                 name="address"
                                 onChange={(e) => onChange(e)}
@@ -132,7 +127,7 @@ const Sourcing = ({
                                 className="d-block text-black-2 font-size-4 font-weight-semibold mb-4"
                               >
                                 Contact #
-                            </label>
+                              </label>
                               <input
                                 name="contact"
                                 onChange={(e) => onChange(e)}
@@ -154,13 +149,13 @@ const Sourcing = ({
                                 className="d-block text-black-2 font-size-4 font-weight-semibold mb-4"
                               >
                                 Description
-                            </label>
+                              </label>
                               <input
                                 name="description"
                                 onChange={(e) => onChange(e)}
                                 value={formData.description}
                                 type="text"
-                                required
+
                                 className="form-control h-px-48"
                                 id="namedash"
                               // placeholder="Enter Email"
@@ -174,7 +169,7 @@ const Sourcing = ({
                           <div className="col-md-12">
                             <input
                               type="button"
-                              value="Create"
+                              value="Edit"
                               type="submit"
                               className="btn btn-green btn-h-60 text-white min-width-px-210 rounded-5 text-uppercase"
                             />
@@ -195,5 +190,9 @@ const Sourcing = ({
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   selectedCustomer: state.customer.selectedCustomer
+
 });
-export default connect(mapStateToProps, { editProduct })(Sourcing);
+export default connect(mapStateToProps, { editCustomer })(Sourcing);
+
+
+

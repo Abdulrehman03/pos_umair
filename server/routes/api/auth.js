@@ -151,7 +151,7 @@ router.post("/reset_password", async (req, res) => {
                     email: user.email,
                   },
                 },
-                function (error, response, body) {}
+                function (error, response, body) { }
               );
 
               res.status(200).json(user);
@@ -176,5 +176,24 @@ router.get("/load-user", auth, async (req, res) => {
     res.json({ msg: "Sucess" });
   }
 });
+
+
+// @route    GET api/sale
+// @desc     Get All sale
+// @access   Private
+router.get('/', async (req, res) => {
+  try {
+
+    const user = await User.find()
+
+    res.json(user)
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json(err.message);
+  }
+});
+
+
+
 
 module.exports = router;

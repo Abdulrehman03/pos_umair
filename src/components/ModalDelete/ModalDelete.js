@@ -5,6 +5,7 @@ import GlobalContext from "../../context/GlobalContext";
 import { connect } from "react-redux";
 import { deleteProduct, editProduct } from "../../store/actions/product";
 import { deleteSale } from "../../store/actions/sale";
+import { deleteCustomer } from "../../store/actions/customer";
 
 const ModalStyled = styled(Modal)`
   /* &.modal {
@@ -27,7 +28,9 @@ const ModalDelete = (props) => {
     deleteSale,
     selectedSale,
     products,
-    editProduct
+    editProduct,
+    selectedCustomer,
+    deleteCustomer
   } = props;
   const [deleteWarning, setDeleteWarning] = useState({
     id: "",
@@ -46,6 +49,12 @@ const ModalDelete = (props) => {
       console.log(selectedProduct);
       console.log(gContext.deleteModalVisible.category);
       deleteProduct(selectedProduct._id);
+      gContext.toggleDeleteModal();
+    }
+    if (gContext.deleteModalVisible.category == "Customer") {
+      console.log(selectedCustomer);
+      console.log(gContext.deleteModalVisible.category);
+      deleteCustomer(selectedCustomer._id);
       gContext.toggleDeleteModal();
     }
     if (gContext.deleteModalVisible.category == "SALES") {
@@ -136,6 +145,7 @@ const ModalDelete = (props) => {
 const mapStateToProps = (state) => ({
 
   selectedProduct: state.product.selectedProduct,
+  selectedCustomer: state.customer.selectedCustomer,
   selectedSale: state.sale.selectedSale,
   products: state.product.products
 });
@@ -144,5 +154,6 @@ export default connect(mapStateToProps, {
 
   deleteProduct,
   deleteSale,
-  editProduct
+  editProduct,
+  deleteCustomer
 })(ModalDelete);

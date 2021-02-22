@@ -15,6 +15,7 @@ const finance = ({
   products,
   setSelectedProduct,
   deleteProduct,
+  allLogs,
   user
 }) => {
   const styles = {
@@ -36,7 +37,7 @@ const finance = ({
     getProducts();
   }, [isAuthenticated]);
 
-  
+
   useEffect(() => {
     if (user && user.email != 'admin@mail.com') {
       Router.push("/dashboard-main");
@@ -168,6 +169,48 @@ const finance = ({
             maxHeight="70vh"
             searchBottom={false}
           />
+
+          <h5 style={{ color: "#00b074" }}>Logs</h5>
+          <div className="table-responsive">
+            <table className="table table-striped">
+              <thead>
+                <tr>
+                  <th
+                    scope="col"
+                    className="pl-0  border-0 font-size-4 font-weight-bold"
+                  >
+                    Product Name
+                        </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
+                    Quantity Added
+                        </th>
+                  <th
+                    scope="col"
+                    className="border-0 font-size-4 font-weight-bold"
+                  >
+                    Timestamp
+                   </th>
+
+                </tr>
+              </thead>
+
+              <tbody>
+                {
+                  allLogs && allLogs.map((item) => (
+                    <tr className="border border-color-2">
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.PRODUCT_NAME}</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.QUANTITY}</td>
+                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{new Date(item.TIMESTAMP).toLocaleString()}</td>
+                    </tr>
+                  ))
+                }
+
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </PageWrapper>
@@ -177,6 +220,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
   products: state.product.products,
+  allLogs: state.logs.allLogs
 });
 export default connect(mapStateToProps, { getProducts, deleteProduct, setSelectedProduct })(
   finance

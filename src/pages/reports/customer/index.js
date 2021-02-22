@@ -77,8 +77,11 @@ const finance = ({
 
   useEffect(() => {
     if (sales && customers) {
+      customerRows = []
+      setCustomerRows(customerRows)
+      console.log("useEffect")
+
       customers.map((customer) => {
-        setCustomerRows([])
         let data = {
           _id: customer._id,
           customer_name: customer.customer_name,
@@ -104,6 +107,7 @@ const finance = ({
 
   useEffect(() => {
     if (customerRows) {
+
       setDatatable({
         ...datatable,
         rows: [
@@ -139,12 +143,12 @@ const finance = ({
   const handleEditReport = (row) => {
     console.log(row);
     setSelectedCustomer(row);
-    Router.push("/reports/product/edit");
+    Router.push("/reports/customer/edit");
   };
   const handleDeleteReport = (row) => {
     console.log(row);
     setSelectedCustomer(row);
-    gContext.toggleDeleteModal("Products");
+    gContext.toggleDeleteModal("Customer");
   };
 
   const handleViewDetail = (row) => {

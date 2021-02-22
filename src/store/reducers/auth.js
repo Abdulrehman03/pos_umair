@@ -2,7 +2,8 @@ const initialState = {
   user: null,
   token: "",
   isAuthenticated: false,
-  loading: false
+  loading: false,
+  allUsers: null
 };
 
 export default function (state = initialState, action) {
@@ -24,7 +25,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
       };
-
+    case "USERS_LOADED":
+      return {
+        ...state,
+        allUsers: payload
+      }
     case "AUTH_ERROR":
     case "LOGIN_FAIL":
     case "REGISTER_FAIL":

@@ -172,6 +172,7 @@ const Sourcing = ({
                                 onChange={(e) => onChange(e)}
                                 value={formData.quantity}
                                 type="number"
+                                min={0}
                                 required
                                 className="form-control h-px-48"
                                 id="namedash"

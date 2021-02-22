@@ -26,6 +26,7 @@ export const loadUser = () => async (dispatch) => {
     dispatch(getProducts());
     dispatch(getCustomers());
     dispatch(getTransactionLogs());
+    dispatch(getUsers());
   } catch (err) {
     dispatch({
       type: "AUTH_ERROR",
@@ -264,6 +265,25 @@ export const activateAccount = (data) => async (dispatch) => {
     type: "ACTIVATE_ACCOUNT",
   });
 };
+
+
+export const getUsers = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/api/auth");
+    console.log(res.data)
+    dispatch({
+      type: "USERS_LOADED",
+      payload: res.data,
+    });
+  } catch (err) {
+    dispatch({
+      type: "USERS_LOADING_FAILED",
+    });
+  }
+};
+
+
+
 //Logout User
 
 export const logout = () => (dispatch) => {
