@@ -135,7 +135,7 @@ const finance = ({
           ...saleData.map((row, order) => ({
             ...row,
           })),
-        ],
+        ], 
       });
     }
   }, [sales, state]);

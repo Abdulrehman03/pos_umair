@@ -9,7 +9,8 @@ import { v4 as uuidv4 } from "uuid";
 
 const Sourcing = ({
   addCustomer,
-  isAuthenticated
+  isAuthenticated,
+  user
 
 }) => {
 
@@ -20,6 +21,7 @@ const Sourcing = ({
     address: "",
     description: "",
     quantity: "",
+    CREATED_BY: user && user._id
   });
   useEffect(() => {
     if (!isAuthenticated) {
@@ -144,7 +146,7 @@ const Sourcing = ({
                                 onChange={(e) => onChange(e)}
                                 value={formData.description}
                                 type="text"
-                               
+
                                 className="form-control h-px-48"
                                 id="namedash"
                               // placeholder="Enter Email"
@@ -178,6 +180,6 @@ const Sourcing = ({
 };
 const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-
+  user: state.auth.user
 });
 export default connect(mapStateToProps, { addCustomer })(Sourcing);

@@ -64,7 +64,7 @@ const finance = ({
     barcode: "",
     product_name: "",
     selected_quantity: "",
-    total_price: "",
+
   };
 
 
@@ -73,7 +73,7 @@ const finance = ({
     "Bar Code",
     "Product Name",
     "Quantity",
-    "Total Price",
+   
 
   ];
   let allColumns = [];

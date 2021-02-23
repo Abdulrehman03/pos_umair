@@ -17,6 +17,9 @@ const CustomerSchema = new mongoose.Schema({
   description: {
     type: String,
   },
+  CREATED_BY: {
+    type: String
+  },
   history: {},
   date_created: {
     type: Date,

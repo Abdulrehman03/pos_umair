@@ -191,7 +191,29 @@ const finance = ({
       });
     }
   }, [sales, state, pendingFilter]);
-  console.log(datatable)
+  const [formData, setFormData] = useState({
+    total_sale: "",
+    total_profit: ""
+  })
+  useEffect(() => {
+    if (datatable) {
+      formData.total_sale = 0;
+      formData.total_profit = 0;
+      setFormData({ ...formData, total_profit: 0, total_sale: 0 })
+      setFormData({})
+      datatable.rows.map((item) => {
+        formData.total_sale = formData.total_sale + parseInt(item.total_payment)
+        formData.total_profit = formData.total_profit + parseInt(item.sale_profit)
+        console.log(item.sale_profit)
+        console.log(item.total_payment)
+      })
+      setFormData({ ...formData, total_profit: formData.total_profit, total_sale: formData.total_sale })
+      console.log(formData)
+    }
+  }, [datatable])
+
+
+  console.log(formData)
 
 
 
@@ -285,7 +307,17 @@ const finance = ({
             maxHeight="70vh"
             searchBottom={false}
           />
+ <div class='row mb-20'>
+            <div class="col-lg-4">
+              <div class="input-group input-group-default">
+                <span class="input-group-text" style={{ height: '48px' }} id="inputGroup-sizing-default">Total Sale</span>
+                <input type="text" class="form-control" value={formData.total_sale} aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" />
+              </div>
+            </div>
 
+           
+
+          </div>
           <div style={{ textAlign: 'center' }}>
             <ReactToPrint
 

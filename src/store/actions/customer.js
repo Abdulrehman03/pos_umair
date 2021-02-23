@@ -135,10 +135,19 @@ export const getCustomers = () => async (dispatch) => {
   dispatch(setLoading());
   try {
     const res = await axios.get("/api/customer");
-
+    
+    let user = localStorage.getItem('user');
+    user = JSON.parse(user)
+    console.log(user)
+    let filtered = []
+    if (user) {
+      filtered = res.data.filter((item) => {
+        return user._id == item.CREATED_BY || user.email == 'admin@mail.com'
+      })
+    }
     dispatch({
       type: "CUSTOMER_LOADED",
-      payload: res.data,
+      payload: filtered,
     });
   } catch (err) {
     dispatch({
