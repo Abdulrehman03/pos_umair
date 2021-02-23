@@ -15,8 +15,12 @@ router.post('/', async (req, res) => {
       ...req.body,
       history: []
     }
-    let customer = new
-      Customer(data)
+    let customer = await Customer.findOne({ contact: req.body.contact });
+    if (customer) {
+      return res.status(400).json({ errors: [{ msg: "Already exists" }] });
+    }
+
+    customer = new Customer(data)
     await customer.save()
 
     res.json(customer);
