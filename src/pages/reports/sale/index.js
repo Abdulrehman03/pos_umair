@@ -254,7 +254,7 @@ const finance = ({
               months={2}
               ranges={state}
               direction="horizontal"
-            />;
+            />
 
             <input
               type="button"
@@ -355,7 +355,7 @@ const finance = ({
               months={2}
               ranges={state2}
               direction="horizontal"
-            />;
+            />
             <div class='row'>
               <div className='col-lg-4'>
                 <label

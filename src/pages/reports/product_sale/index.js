@@ -181,7 +181,7 @@ const finance = ({
             months={2}
             ranges={state}
             direction="horizontal"
-          />;
+          />
           <MDBDataTable
             hover
             entriesOptions={[10, 20, 25]}

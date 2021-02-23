@@ -182,7 +182,7 @@ const finance = ({
             months={2}
             ranges={state}
             direction="horizontal"
-          />;
+          />
           {/* <div style={styles.csv/Button}> */}
 
           <MDBDataTable
