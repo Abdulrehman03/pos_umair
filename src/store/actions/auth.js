@@ -267,6 +267,49 @@ export const activateAccount = (data) => async (dispatch) => {
 };
 
 
+export const editUser = (body) => async (dispatch) => {
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+  try {
+    dispatch(setLoading());
+    console.log(body)
+    const res = await axios.put(`/api/auth/${body._id}`, body, config);
+    console.log(res);
+    dispatch({
+      type: "User_EDITED",
+      payload: res.data,
+    });
+    toast.success("User EDITED", {
+      position: "bottom-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+    dispatch(getUsers());
+  } catch (error) {
+    console.log(error.message);
+    dispatch({
+      type: "User_EDITING_FAILED",
+    });
+    toast.error("User EDITING Failed!", {
+      position: "bottom-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: false,
+      progress: undefined,
+    });
+  }
+};
+
+
 export const getUsers = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/auth");

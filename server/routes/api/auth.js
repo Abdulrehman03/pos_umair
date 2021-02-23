@@ -194,6 +194,18 @@ router.get('/', async (req, res) => {
 });
 
 
+router.put('/:user_id', async (req, res) => {
+  try {
+    console.log(req.params.user_id);
+    let user_id = req.params.user_id
+    const user = await User.findOneAndUpdate({ _id: user_id }, req.body)
+    res.send("User Edited")
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json(err.message);
+  }
+});
+
 
 
 module.exports = router;

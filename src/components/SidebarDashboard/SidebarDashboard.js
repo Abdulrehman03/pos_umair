@@ -38,6 +38,18 @@ const Sidebar = ({ user }) => {
                 </a>
               </Link>
             </li>
+            {
+              user && user.email == 'admin@mail.com' && (
+                <li className="" >
+                  <Link href="/reports/users">
+                    <a className={`px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/reports/users' && 'active'}`}>
+                      <i className="icon icon-layout-11 mr-7"></i>Users
+                  </a>
+                  </Link>
+                </li>
+              )
+            }
+
             {/* <li className="">
               <Link href="/admin-dropdowns">
                 <a className={`px-10 py-1 my-5 font-size-4 font-weight-semibold flex-y-center ${router.pathname == '/admin-dropdowns' && 'active'}`} >

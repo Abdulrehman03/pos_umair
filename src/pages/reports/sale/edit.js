@@ -113,7 +113,6 @@ const Sourcing = ({
             let data = {
                 _id: item._id,
                 quantity: quantity,
-                
             }
 
             await editProduct(data, "cart")
@@ -183,23 +182,25 @@ const Sourcing = ({
     }
 
 
-    const onDeleteProduct = (product) => {
+    const onDeleteProduct = async (product) => {
+
+
+        if (product) {
+            let quantity = product.quantity + parseInt(product.selected_quantity)
+            let data = {
+                _id: product._id,
+                quantity: quantity
+            }
+            await editProduct(product, "cart")
+        }
+
         let arr = formData.products.filter((item) => {
             return item._id != product._id
         })
         formData.products = arr
         setFormData({ ...formData, products: arr })
-        formData.products.map(async (item) => {
-
-            let quantity = item.quantity - parseInt(item.selected_quantity)
-            let data = {
-                _id: item._id,
-                quantity: quantity
-            }
-            await editProduct(data, "cart")
-        })
-
         updateTotal()
+        console.log(product)
     }
     const updateTotal = () => {
         if (formData.products) {
