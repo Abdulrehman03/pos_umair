@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { getProducts } from "./product";
 import { getCustomers } from "./customer";
 import { getSales } from "./sale";
-import { getTransactionLogs } from "./logs";
+import { getTransactionLogs, getLogs } from "./logs";
 
 //Load User
 export const loadUser = () => async (dispatch) => {
@@ -26,6 +26,7 @@ export const loadUser = () => async (dispatch) => {
     dispatch(getProducts());
     dispatch(getCustomers());
     dispatch(getTransactionLogs());
+    dispatch(getLogs());
     dispatch(getUsers());
   } catch (err) {
     dispatch({

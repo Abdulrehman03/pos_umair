@@ -108,56 +108,50 @@ const Sourcing = ({
         console.log(formData)
         await editSale(formData)
         formData.products.map(async (item) => {
-
-            let quantity = item.quantity - parseInt(item.selected_quantity)
-            let data = {
-                _id: item._id,
-                quantity: quantity,
+            let selectedProduct = products.find((product) => {
+                return item._id == product._id
+            })
+            console.log(selectedProduct)
+            if (item.previous_selected_quantity) {
+                let previous_selected_quantity = parseInt(item.previous_selected_quantity)
+                let selected_quantity = parseInt(item.selected_quantity)
+                if (selected_quantity > previous_selected_quantity) {
+                    let quantity = selectedProduct.quantity - (selected_quantity - previous_selected_quantity)
+                    let data = {
+                        _id: item._id,
+                        quantity: quantity
+                    }
+                    await editProduct(data, "cart")
+                    console.log(data)
+                }
+                else {
+                    let quantity = selectedProduct.quantity + (previous_selected_quantity - selected_quantity)
+                    let data = {
+                        _id: item._id,
+                        quantity: quantity
+                    }
+                    await editProduct(data, "cart")
+                    console.log(data)
+                }
             }
 
-            await editProduct(data, "cart")
         })
     };
 
 
 
-    const onChangeCustomer = (e) => {
-
-        selectedCustomer = customers.find((customer) => {
-            return customer._id == e.value
-        })
-
-        setSelectedCustomer(selectedCustomer)
-    }
-
-
-    const onSelectProduct = (e) => {
-        let check = formData.products.find((item) => {
-            return item._id == e.value
-        })
-
-        if (check == undefined) {
-            selectedProduct = products.find((product) => {
-                return product._id == e.value
-            })
-            let data = {
-                ...selectedProduct,
-                selected_quantity: 1,
-                total_price: selectedProduct.sale_price
-            }
-            formData.products.push(data)
-            setFormData({ ...formData, products: formData.products })
-        }
-        updateTotal()
-    }
 
     const handleOnChangeQuantity = (e, product) => {
         let arr = formData.products
+
         arr.map((item) => {
+
             if (item._id == product._id) {
                 item.total_price = item.sale_price * e.target.value
+                item.previous_selected_quantity = !item.previous_selected_quantity ? item.selected_quantity : item.previous_selected_quantity
                 item.selected_quantity = e.target.value
             }
+            console.log(item)
         })
         formData.products = arr
         setFormData({ ...formData, products: arr })
@@ -183,15 +177,20 @@ const Sourcing = ({
 
 
     const onDeleteProduct = async (product) => {
-
-
         if (product) {
-            let quantity = product.quantity + parseInt(product.selected_quantity)
+            let selectedProduct = products.find((item) => {
+                return item._id == product._id
+            })
+            console.log(selectedProduct)
+            console.log(product)
+            let quantity = selectedProduct.quantity + parseInt(product.selected_quantity)
             let data = {
                 _id: product._id,
                 quantity: quantity
             }
-            await editProduct(product, "cart")
+
+
+            await editProduct(data, "cart")
         }
 
         let arr = formData.products.filter((item) => {
