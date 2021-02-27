@@ -92,7 +92,7 @@ const Sourcing = ({
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
-
+    console.log(formData)
     const onSubmit = async (e) => {
         e.preventDefault();
 
@@ -100,10 +100,12 @@ const Sourcing = ({
         formData.pending_payment = formData.total_price
         setFormData({ ...formData, customer: formData.customer, pending_payment: formData.pending_payment })
 
+
         formData.products.map((item) => {
             let profit = item.cost_price * parseInt(item.selected_quantity)
             profit = item.total_price - profit
             formData.sale_profit = formData.sale_profit + profit
+            // item.previous_selected_quantity = null
         })
         console.log(formData)
         await editSale(formData)
@@ -111,6 +113,7 @@ const Sourcing = ({
             let selectedProduct = products.find((product) => {
                 return item._id == product._id
             })
+            console.log(item)
             console.log(selectedProduct)
             if (item.previous_selected_quantity) {
                 let previous_selected_quantity = parseInt(item.previous_selected_quantity)
@@ -153,7 +156,8 @@ const Sourcing = ({
             }
             console.log(item)
         })
-        formData.products = arr
+        formData.products = arr;
+        console.log(formData)
         setFormData({ ...formData, products: arr })
         updateTotal()
     }
