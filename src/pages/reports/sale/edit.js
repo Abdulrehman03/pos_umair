@@ -10,6 +10,7 @@ import Select from 'react-select';
 
 
 
+
 const Sourcing = ({
 
     isAuthenticated,
@@ -139,6 +140,7 @@ const Sourcing = ({
             }
 
         })
+        Router.push('/reports/sale');
     };
 
 
@@ -436,7 +438,7 @@ const Sourcing = ({
                                                                         />
                                                                         <input
                                                                             type="button"
-                                                                            value="Create"
+                                                                            value="Edit"
                                                                             type="submit"
                                                                             className="btn btn-green btn-h-30 text-white min-width-px-100 rounded-5 text-uppercase"
                                                                         />
