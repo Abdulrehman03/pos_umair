@@ -57,6 +57,7 @@ const finance = ({
 
   let tabValues = {
     customer_name: "",
+    description:"",
     order_number: "",
     total_products: "",
     total_payment: "",
@@ -67,6 +68,7 @@ const finance = ({
 
   let headings = [
     "Customer Name",
+    "Description",
     "Order No.",
     "Total Products",
     "Total Payment",
@@ -107,6 +109,7 @@ const finance = ({
         let data = {
           _id: item._id,
           customer_name: item.customer.customer_name + " ( " + item.customer.contact + " )",
+          description: item.customer.description,
           order_number: new Date(item.date_created).getTime(),
           total_products: item.products.length,
           total_payment: item.total_price,
@@ -307,7 +310,7 @@ const finance = ({
             maxHeight="70vh"
             searchBottom={false}
           />
- <div class='row mb-20'>
+          <div class='row mb-20'>
             <div class="col-lg-4">
               <div class="input-group input-group-default">
                 <span class="input-group-text" style={{ height: '48px' }} id="inputGroup-sizing-default">Total Sale</span>
@@ -315,7 +318,7 @@ const finance = ({
               </div>
             </div>
 
-           
+
 
           </div>
           <div style={{ textAlign: 'center' }}>
