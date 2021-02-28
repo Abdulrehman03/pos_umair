@@ -53,6 +53,7 @@ export const getLogs = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/logs");
     console.log(res.data)
+  
     dispatch({
       type: "LOGS_LOADED",
       payload: res.data,

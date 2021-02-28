@@ -431,7 +431,7 @@ const Sourcing = ({
                                                                     <div className="">
                                                                         <input
                                                                             type="button"
-                                                                            value="Print"
+                                                                            value="Print" id='printButton'
                                                                             onClick={handlePrint}
 
                                                                             className="btn btn-green btn-h-30 text-white mr-5 min-width-px-100 rounded-5 text-uppercase"

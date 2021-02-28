@@ -328,7 +328,7 @@ const finance = ({
               trigger={() => {
                 return <input
                   type="button"
-                  value="Print"
+                  value="Print" id='printButton'
 
                   className="btn btn-green btn-h-30 text-white min-width-px-60 rounded-5 text-uppercase"
                 />

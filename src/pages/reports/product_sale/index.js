@@ -73,7 +73,7 @@ const finance = ({
     "Bar Code",
     "Product Name",
     "Quantity",
-   
+
 
   ];
   let allColumns = [];
@@ -199,7 +199,7 @@ const finance = ({
             trigger={() => {
               return <input
                 type="button"
-                value="Print"
+                value="Print" id='printButton'
 
                 className="btn btn-green btn-h-30 text-white min-width-px-60 rounded-5 text-uppercase"
               />
@@ -242,47 +242,7 @@ const finance = ({
           </div>
 
 
-          <h5 style={{ color: "#00b074" }}>Logs</h5>
-          <div className="table-responsive">
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th
-                    scope="col"
-                    className="pl-0  border-0 font-size-4 font-weight-bold"
-                  >
-                    Product Name
-                        </th>
-                  <th
-                    scope="col"
-                    className="border-0 font-size-4 font-weight-bold"
-                  >
-                    Quantity Added
-                        </th>
-                  <th
-                    scope="col"
-                    className="border-0 font-size-4 font-weight-bold"
-                  >
-                    Timestamp
-                   </th>
 
-                </tr>
-              </thead>
-
-              <tbody>
-                {
-                  allLogs && allLogs.map((item) => (
-                    <tr className="border border-color-2">
-                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.PRODUCT_NAME}</td>
-                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{item.QUANTITY}</td>
-                      <td scope="row" className="pl-6 border-0 py-7 pr-0">{new Date(item.TIMESTAMP).toLocaleString()}</td>
-                    </tr>
-                  ))
-                }
-
-              </tbody>
-            </table>
-          </div>
         </div>
 
 
