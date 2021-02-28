@@ -6,8 +6,8 @@ import Router from "next/router";
 import { getProducts, deleteProduct, setSelectedProduct } from "../../../store/actions/product";
 import GlobalContext from "../../../context/GlobalContext";
 import { CSVLink } from "react-csv";
-
-
+import { DateRangePicker } from 'react-date-range'
+import { addDays } from 'date-fns';
 
 const finance = ({
   isAuthenticated,
@@ -15,7 +15,7 @@ const finance = ({
   products,
   setSelectedProduct,
   deleteProduct,
-  allLogs,
+  logs,
   user
 }) => {
   const styles = {
@@ -30,12 +30,22 @@ const finance = ({
     },
   };
   const gContext = useContext(GlobalContext);
+  const [allLogs, setAllLogs] = useState(logs)
   useEffect(() => {
     if (!isAuthenticated) {
       Router.push("/");
     }
     getProducts();
   }, [isAuthenticated]);
+
+  const [state, setState] = useState([
+    {
+      startDate: new Date(),
+      endDate: addDays(new Date(), 7),
+      key: 'selection'
+    }
+  ]);
+
 
 
   useEffect(() => {
@@ -51,8 +61,6 @@ const finance = ({
     sale_price: "",
     quantity: "",
   };
-
-
   let financeName = [
     "Barcode #",
     "Product Name",
@@ -125,12 +133,25 @@ const finance = ({
     setSelectedProduct(row);
     gContext.toggleDeleteModal("Products");
   };
-
   const handleViewDetail = (row) => {
     console.log(row);
     setSelectedProduct(row);
     gContext.toggleApplicationModal("Products");
   };
+
+
+  useEffect(() => {
+    console.log(state)
+    let startDate = new Date(new Date(state[0].startDate).toDateString())
+    let endDate = new Date(new Date(state[0].endDate).toDateString())
+
+    let filtered = logs.filter((item) => {
+      let saleDate = new Date(new Date(item.TIMESTAMP).toDateString())
+      return startDate <= saleDate && endDate >= saleDate
+    })
+    setAllLogs(filtered)
+    console.log(filtered)
+  }, [logs, state])
 
   return (
     <PageWrapper
@@ -170,6 +191,16 @@ const finance = ({
             searchBottom={false}
           />
 
+          <DateRangePicker
+            onChange={item => setState([item.selection])}
+            showSelectionPreview={true}
+            moveRangeOnFirstSelection={false}
+            months={2}
+            ranges={state}
+            direction="horizontal"
+          />
+
+
           <h5 style={{ color: "#00b074" }}>Logs</h5>
           <div className="table-responsive">
             <table className="table table-striped">
@@ -193,7 +224,6 @@ const finance = ({
                   >
                     Timestamp
                    </th>
-
                 </tr>
               </thead>
 
@@ -220,7 +250,7 @@ const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user,
   products: state.product.products,
-  allLogs: state.logs.allLogs
+  logs: state.logs.allLogs
 });
 export default connect(mapStateToProps, { getProducts, deleteProduct, setSelectedProduct })(
   finance

@@ -126,7 +126,6 @@ const finance = ({
           if (pendingFilter) {
             if (data.pending_payment > 0) {
               saleData.push(data)
-
             }
           }
           if (!pendingFilter) {
