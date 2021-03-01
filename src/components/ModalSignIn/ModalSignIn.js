@@ -16,11 +16,12 @@ const ModalStyled = styled(Modal)`
 
 const ModalSignIn = (props) => {
   const { login, loginByGoogle } = props;
-  const [formData, setFormData] = useState({
+  let [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-  const { email, password } = formData;
+
+  let { email, password } = formData;
 
   const [showPass, setShowPass] = useState(true);
   const gContext = useContext(GlobalContext);
@@ -42,6 +43,12 @@ const ModalSignIn = (props) => {
     e.preventDefault();
     login(formData);
     gContext.toggleSignInModal();
+    email = " ",
+      password = " ",
+      setFormData(formData)
+    setFormData({})
+    console.log(formData)
+
   };
   const responseGoogle = (response) => {
     console.log(response);
